@@ -47,6 +47,7 @@ class DocumentTest(unittest.TestCase):
         database = pymongo.Connection().mongo_object
         collection = database.delete_tests
         Test = MongoObject.factory('delete_tests')
+        Test.__db__.drop_collection('delete_tests')
         test = Test.create({'hello':'world'})
         assert collection.count() == 1
         test.delete()

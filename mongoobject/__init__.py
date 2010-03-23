@@ -38,8 +38,8 @@ class Document(object):
         return cls(object_dict)
     
     @classmethod
-    def find(cls, **kwargs):
-        for object_dict in cls.__db__[cls.__collection__].find(**kwargs):
+    def find(cls, spec=None):
+        for object_dict in cls.__db__[cls.__collection__].find(spec=spec):
             yield cls(object_dict)
 
 class MongoObject(object):
