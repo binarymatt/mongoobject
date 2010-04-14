@@ -16,7 +16,7 @@ setup(
         'pymongo==1.5.1',
     ],
     classifiers = [
-            'Development Status :: 3 - Alpha'
+            'Development Status :: 3 - Alpha',
             'Environment :: Console',
             'Intended Audience :: Developers',
             'License :: OSI Approved :: MIT License',
