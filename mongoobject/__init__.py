@@ -57,6 +57,6 @@ class MongoObject(object):
     @classmethod
     def factory(cls, collection_name, db_name='mongo_object'):
         items = {'__collection__': collection_name}
-        items['__db__'] = cls.db()
+        items['__db__'] = cls.db(db_name=db_name)
         Klass = type(collection_name.capitalize(),(Document,), items)
         return Klass
