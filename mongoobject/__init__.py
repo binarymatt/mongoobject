@@ -44,7 +44,7 @@ class Document(object):
     
     @classmethod
     def find_one(cls, spec=None):
-        return cls.__db__[cls.__collection__].find_one(spec=spec)
+        return cls.__db__[cls.__collection__].find_one(spec)
 
 class MongoObject(object):
     
