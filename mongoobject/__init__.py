@@ -20,8 +20,9 @@ class Document(object):
         return self._object_dict[name]
     
     def __setattr__(self, name, value):
-        if name is not '_id':
-            self._object_dict[name] = value
+        #if name is not in ['_id', '__dict__', '_object_dict']:
+        #    self._object_dict[name] = value
+        object.__setattr__(self, name, value)
     
     def __setitem__(self, name, value):
         self.__setattr__(name, value)
@@ -39,12 +40,14 @@ class Document(object):
     
     @classmethod
     def find(cls, spec=None):
+		#return cls.__db__[cls.__collection__].find(spec)
         for object_dict in cls.__db__[cls.__collection__].find(spec=spec):
             yield cls(object_dict)
     
     @classmethod
     def find_one(cls, spec=None):
         return cls.__db__[cls.__collection__].find_one(spec)
+		
 
 class MongoObject(object):
     
