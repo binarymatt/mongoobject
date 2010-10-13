@@ -13,7 +13,7 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
     install_requires=[
-        'pymongo==1.5.1',
+        'pymongo>=1.5.1',
     ],
     classifiers = [
             'Development Status :: 3 - Alpha',

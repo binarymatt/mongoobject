@@ -27,6 +27,10 @@ class Document(object):
     def __setitem__(self, name, value):
         self.__setattr__(name, value)
     
+    def get_id(self):
+        return self._id
+    id = property(get_id)
+    
     @classmethod
     def create(cls, dictionary):
         object_id = cls.__db__[cls.__collection__].insert(dictionary)
