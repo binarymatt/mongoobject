@@ -20,7 +20,7 @@ class Document(object):
         return self._object_dict[name]
     
     def __setattr__(self, name, value):
-        #if name is not in ['_id', '__dict__', '_object_dict']:
+        #if name not in ['_id', '__dict__', '_object_dict']:
         #    self._object_dict[name] = value
         object.__setattr__(self, name, value)
     
@@ -50,7 +50,7 @@ class Document(object):
     
     @classmethod
     def find_one(cls, spec=None):
-        return cls.__db__[cls.__collection__].find_one(spec)
+        return cls(cls.__db__[cls.__collection__].find_one(spec))
 		
 
 class MongoObject(object):
