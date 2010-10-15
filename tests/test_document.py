@@ -3,16 +3,23 @@ from mongoobject import MongoObject
 import pymongo
 class DocumentTest(unittest.TestCase):
     fixture = {'firstname': 'John', 'lastname': 'Doe', 'email': 'test@acme.com'}
+    def setUp(self):
+        pass
+    
+    def tearDown(self):
+        Test = MongoObject.factory('tests')
+        Test.__db__.drop_collection('tests')
+    
     def test_create(self):
         Test = MongoObject.factory('create_tests')
         test = Test.create(self.fixture)
         assert isinstance(test, Test)
         assert hasattr(test, '__collection__')
         
-    
     def test_get(self):
         Test = MongoObject.factory('tests')
-        test = Test.get('4ba4d1f84fa08262e8000000')
+        Test.create(self.fixture)
+        test = Test.find_one()
         assert test._object_dict['firstname'] == 'John'
         assert test._object_dict['lastname'] == 'Doe'
     
@@ -26,14 +33,17 @@ class DocumentTest(unittest.TestCase):
     
     def test_set_attribute(self):
         Test = MongoObject.factory('tests')
-        test = Test.get('4ba4d1f84fa08262e8000000')
+        Test.create(self.fixture)
+        test = Test.find_one()
         test.phone = 6152898513
         assert test._object_dict.has_key('phone')
         assert test._object_dict['phone'] == 6152898513
     
     def test_get_attribute(self):
         Test = MongoObject.factory('tests')
-        test = Test.get('4ba4d1f84fa08262e8000000')
+        Test.create(self.fixture)
+        test = Test.find_one()
+        assert test
         assert test.firstname == 'John'
         assert test.lastname == 'Doe'
     
