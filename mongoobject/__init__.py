@@ -17,7 +17,7 @@ class Document(object):
         return False
     
     def __getattr__(self, name):
-        return self._object_dict[name]
+        return self._object_dict.get(name)
     
     def __setattr__(self, name, value):
         if name not in ['_id', '__dict__', '_object_dict']:
@@ -30,19 +30,23 @@ class Document(object):
         self.__setattr__(name, value)
     
     def get_id(self):
-        return self._id
+        object_id = getattr(self, '_id', None)
+        if object_id:
+            return str(object_id)
     id = property(get_id)
     
     @classmethod
     def create(cls, dictionary):
         object_id = cls.__db__[cls.__collection__].insert(dictionary)
+        return cls.get(str(object_id))
         #dictionary['_id'] = str(object_id)
-        return cls(dictionary)
     
     @classmethod
     def get(cls, object_id):
         object_dict = cls.__db__[cls.__collection__].find_one({'_id':ObjectId(object_id)})
-        return cls(object_dict)
+        if object_dict:
+            return cls(object_dict)
+        return None
     
     @classmethod
     def find(cls, spec=None):
@@ -52,7 +56,10 @@ class Document(object):
     
     @classmethod
     def find_one(cls, spec=None):
-        return cls(cls.__db__[cls.__collection__].find_one(spec))
+        result =  cls(cls.__db__[cls.__collection__].find_one(spec))
+        if result._object_dict:
+            return result
+        return None
 		
 
 class MongoObject(object):
@@ -64,12 +71,12 @@ class MongoObject(object):
         return cls._connection
     
     @classmethod
-    def db(cls, db_name='mongo_object'):
-        return cls.connection()[db_name]
+    def db(cls, db_name='mongo_object', host='localhost', port=27017):
+        return cls.connection(host, port)[db_name]
     
     @classmethod
-    def factory(cls, collection_name, db_name='mongo_object'):
+    def factory(cls, collection_name, db_name='mongo_object', host='localhost', port=27017):
         items = {'__collection__': collection_name}
-        items['__db__'] = cls.db(db_name=db_name)
+        items['__db__'] = cls.db(db_name=db_name, host=host, port=port)
         Klass = type(collection_name.capitalize(),(Document,), items)
         return Klass
