@@ -39,7 +39,7 @@ class DocumentTest(unittest.TestCase):
         assert test._object_dict.has_key('phone')
         assert test._object_dict['phone'] == 6152898513
     
-    def test_get_attribute(self):
+    def test_attributes(self):
         Test = MongoObject.factory('tests')
         Test.create(self.fixture)
         test = Test.find_one()
@@ -63,3 +63,12 @@ class DocumentTest(unittest.TestCase):
         test.delete()
         assert collection.count() == 0
     
+    def test_getattr(self):
+        Test = MongoObject.factory('attr_tests')
+        Test.create(self.fixture)
+        test = Test.find_one()
+        assert test.firstname == 'John'
+        assert getattr(test,'firstname') == 'John'
+        assert getattr(test,'test', None) is None
+        #print test._object_dict['test']
+        assert getattr(test,'test',2) == 2

@@ -17,14 +17,19 @@ class Document(object):
         return False
     
     def __getattr__(self, name):
-        return self._object_dict.get(name)
+        try:
+            return self.__dict__['_object_dict'][name]
+        except:
+            raise AttributeError()
     
     def __setattr__(self, name, value):
         if name not in ['_id', '__dict__', '_object_dict']:
         #    self._object_dict[name] = value
         #object.__setattr__(self, name, value)
             self.__dict__['_object_dict'][name] = value
-        
+    
+    def __delattr__(self, name):
+        del self.__dict__['_object_dict'][name]
     
     def __setitem__(self, name, value):
         self.__setattr__(name, value)
