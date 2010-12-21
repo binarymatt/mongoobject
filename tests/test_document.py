@@ -72,3 +72,19 @@ class DocumentTest(unittest.TestCase):
         assert getattr(test,'test', None) is None
         #print test._object_dict['test']
         assert getattr(test,'test',2) == 2
+
+    def test_save_file(self):
+        Test = MongoObject.factory('save_tests')
+        id = Test.save_file('test')
+        import gridfs
+        fs = gridfs.GridFS(Test.__db__)
+        assert fs.exists(id)
+        print fs.get(id)
+        assert fs.get(id).read() == 'test'
+
+    def test_retrieve_file(self):
+        Test = MongoObject.factory('fs_tests')
+        id = Test.save_file('test')
+        f = Test.retrieve_file(id)
+        assert f.read() == 'test'
+

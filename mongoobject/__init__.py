@@ -1,3 +1,5 @@
+import gridfs
+
 from pymongo import Connection
 from pymongo.objectid import ObjectId
 
@@ -41,6 +43,25 @@ class Document(object):
     id = property(get_id)
     
     @classmethod
+    def save_file(cls, file):
+        """
+        saves a file to gridfs
+
+        file - can either be a file like object or a string
+        """
+        fs = gridfs.GridFS(cls.__db__)
+        id = fs.put(file)
+        return id
+    
+    @classmethod
+    def retrieve_file(cls, id):
+        if isinstance(id, basestring):
+            id = ObjectId(id)
+        fs = gridfs.GridFS(cls.__db__)
+        if fs.exists(id):
+            return fs.get(id)
+    
+    @classmethod
     def create(cls, dictionary):
         object_id = cls.__db__[cls.__collection__].insert(dictionary)
         return cls.get(str(object_id))
@@ -55,9 +76,8 @@ class Document(object):
     
     @classmethod
     def find(cls, spec=None):
-		#return cls.__db__[cls.__collection__].find(spec)
-        for object_dict in cls.__db__[cls.__collection__].find(spec=spec):
-            yield cls(object_dict)
+        #return cls.__db__[cls.__collection__].find(spec)
+        return [cls(object_dict) for object_dict in cls.__db__[cls.__collection__].find(spec=spec)]
     
     @classmethod
     def find_one(cls, spec=None):
@@ -65,7 +85,7 @@ class Document(object):
         if result._object_dict:
             return result
         return None
-		
+    
 
 class MongoObject(object):
     
