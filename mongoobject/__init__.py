@@ -43,14 +43,14 @@ class Document(object):
     id = property(get_id)
     
     @classmethod
-    def save_file(cls, file):
+    def save_file(cls, file, **kwargs):
         """
         saves a file to gridfs
 
         file - can either be a file like object or a string
         """
         fs = gridfs.GridFS(cls.__db__)
-        id = fs.put(file)
+        id = fs.put(file, **kwargs)
         return id
     
     @classmethod
@@ -60,6 +60,12 @@ class Document(object):
         fs = gridfs.GridFS(cls.__db__)
         if fs.exists(id):
             return fs.get(id)
+    @classmethod
+    def delete_file(cls, id):
+        if isinstance(id, basestring):
+            id = ObjectId(id)
+        fs = gridfs.GridFS(cls.__db__)
+        return fs.delete(id)
     
     @classmethod
     def create(cls, dictionary):
